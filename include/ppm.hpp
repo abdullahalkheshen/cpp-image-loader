@@ -5,7 +5,7 @@
 class PPM {
 public:
 	// Constructor
-	PPM(std::string filename);
+    PPM(std::string filename);
 	// Destructor
 	~PPM();
 

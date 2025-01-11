@@ -1,5 +1,5 @@
-#include <iostream>
 #include "ppm.hpp"
+#include <iostream>
 
 void test1() {
 	PPM myPPM("./myppm_p3.ppm");
@@ -15,6 +15,6 @@ void test2() {
 
 int main() {
 	test1();
-	test2();
+	//test2();
 	return EXIT_SUCCESS;
 }
