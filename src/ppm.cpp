@@ -104,7 +104,7 @@ PPM::PPM(const std::string& filename) {
             }
         }
     }
-
+    
     validatePixelCount(mPixels.size(), mWidth, mHeight);
 }
 
