@@ -3,6 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <cstdint>
 
 namespace {
     // Constants
@@ -110,20 +111,23 @@ PPM::PPM(const std::string& filename) {
 
 PPM::~PPM() = default;
 
-void PPM::savePPM(const std::string& outFilename) const {
+void PPM::saveP3(const std::string& outFilename) const {
     std::ofstream file(outFilename);
     if (!file) {
         throw std::runtime_error("Failed to create output file: " + outFilename);
     }
+
+    file << "P3\n";
 
     // Write header
     file << MAGIC_NUMBER << '\n'
         << mWidth << ' ' << mHeight << '\n'
         << mMaxRange << '\n';
 
-    // Write pixel data
+    // Write pixel data P3 form her
     for (size_t i = 0; i < mPixels.size(); ++i) {
-        file << mPixels[i];
+        file << static_cast<int> (mPixels[i]);
+		// file(operator<<) (int myPixel) is used to convert the uint8_t to int
         if ((i + 1) % 3 == 0) {
             file << '\n';  // Newline after each pixel (RGB triplet)
         }
@@ -131,6 +135,28 @@ void PPM::savePPM(const std::string& outFilename) const {
             file << ' ';   // Space between RGB values
         }
     }
+
+    if (!file) {
+        throw std::runtime_error("Error writing to file: " + outFilename);
+    }
+}
+
+void PPM::saveP6(const std::string& outFilename) const {
+    std::ofstream file(outFilename);
+    if (!file) {
+        throw std::runtime_error("Failed to create output file: " + outFilename);
+    }
+
+    file << "P6\n";
+
+    // Write header
+    file << MAGIC_NUMBER << '\n'
+        << mWidth << ' ' << mHeight << '\n'
+        << mMaxRange << '\n';
+
+    // Write pixel data in P6 form
+    file.write(reinterpret_cast<const char*>(mPixels.data()), mPixels.size());
+
 
     if (!file) {
         throw std::runtime_error("Error writing to file: " + outFilename);
@@ -167,4 +193,4 @@ int PPM::getWidth() const { return mWidth; }
 int PPM::getHeight() const { return mHeight; }
 int PPM::getMaxRange() const { return mMaxRange; }
 
-const std::vector<int>& PPM::getPixels() const { return mPixels; }
+const std::vector<uint8_t>& PPM::getPixels() const { return mPixels; }
